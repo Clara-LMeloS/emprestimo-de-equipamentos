@@ -3,6 +3,8 @@ package org.emprestimos.service;
 import org.emprestimos.model.Colaborador;
 import org.emprestimos.repository.ColaboradorRepository;
 import org.springframework.stereotype.Service;
+import org.emprestimos.exception.NaoEncontradoException;
+import java.util.List;
 
 @Service
 //contem minhas regas de negócios relacionadas ao meus colaboradores.
@@ -20,4 +22,17 @@ public class ColaboradorService {
         repository.save(colaborador);
         return colaborador;
     }
+    //estou listando todos os meus colaboradores
+    public List<Colaborador> listar(){
+        return repository.findAll();
+    }
+
+    //estou buscando meu colaborador pelo ID
+    public Colaborador buscar(Long id){
+       return repository.findById(id).orElseThrow(()
+               -> new NaoEncontradoException("Colaborador não encontrado."));
+
+    }
+
+
 }

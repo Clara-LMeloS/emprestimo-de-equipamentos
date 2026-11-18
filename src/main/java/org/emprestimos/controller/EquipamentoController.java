@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/equipamentos")
 public class EquipamentoController {
+
     private final EquipamentoService service;
     public EquipamentoController(EquipamentoService service) {
         this.service = service;
