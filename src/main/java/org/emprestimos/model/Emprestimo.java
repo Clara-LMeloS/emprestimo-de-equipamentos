@@ -1,29 +1,56 @@
 package org.emprestimos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
 public class Emprestimo {
 
-    public Emprestimo(){
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Equipamento equipamento;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Colaborador colaborador;
+
+    @Column(nullable = false)
+    private LocalDate dataEmprestimo;
+
+    @Column(nullable = false)
+    private LocalDate dataPrevistaDevolucao;
+
+    private LocalDate dataDevolucao; //vai ser null até voltar
+
+    public boolean isAtrasado(){
+
+        return dataDevolucao == null && dataPrevistaDevolucao.isBefore(LocalDate.now());
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
     Long equipamentoId;
     Long colaboradorId;
     LocalDate dataEmprestimo;
     LocalDate dataDevolucao;
     LocalDate dataPrevistaDevolucao;
-
-
 
     public Emprestimo(Long equipamentoId, Long colaboradorId, LocalDate hoje){
         this.equipamentoId = equipamentoId;
@@ -43,4 +70,5 @@ public class Emprestimo {
         }
     }
 
+     */
 }

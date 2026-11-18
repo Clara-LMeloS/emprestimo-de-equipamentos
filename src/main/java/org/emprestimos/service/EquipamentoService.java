@@ -24,7 +24,7 @@ public class EquipamentoService {
 
     public Equipamento buscar(Long id) {
         //tive que adaptar para o meu id funcionar
-        return repository.findById(Math.toIntExact(id)).orElseThrow(() ->
+        return repository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipamento não encontrado"));
     }
 
