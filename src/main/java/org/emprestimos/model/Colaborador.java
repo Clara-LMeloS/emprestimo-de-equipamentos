@@ -1,9 +1,7 @@
 package org.emprestimos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
@@ -14,9 +12,12 @@ public class Colaborador {
     private Long id;
 
     @NotBlank(message = "O nome é obrigatório")
+    @Column(nullable = false)
     private String nome;
 
     @NotBlank(message = "O E-mail é obrigatório")
+    @Email(message = "E-mail inválido")
+    @Column(nullable = false, unique = true)
     private String email;
 
     private String cargo;
