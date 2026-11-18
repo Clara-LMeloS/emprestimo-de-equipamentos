@@ -30,6 +30,17 @@ public class Equipamento {
     public Equipamento() {
 
     }
+    public void emprestar(){
+        if(this.disponivel != true){
+            throw new IllegalArgumentException("Esse equipamento está emprestado no momento.");
+        }
+        this.disponivel = false;
+    }
+
+    public void devolver(){
+        disponivel = true;
+    }
+
 
     public boolean isDisponivel() {
         return disponivel;
