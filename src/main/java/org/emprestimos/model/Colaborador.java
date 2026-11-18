@@ -1,9 +1,24 @@
 package org.emprestimos.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+
+@Entity
 public class Colaborador {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //o bando de dados que estará gerando o ID
     private Long id;
+
+    @NotBlank(message = "O nome é obrigatório")
     private String nome;
+
+    @NotBlank(message = "O E-mail é obrigatório")
     private String email;
+
     private String cargo;
 
     public Colaborador() {
