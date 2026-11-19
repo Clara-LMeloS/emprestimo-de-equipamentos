@@ -27,23 +27,58 @@ public class Emprestimo {
 
     private LocalDate dataDevolucao; //vai ser null até voltar
 
-    public boolean isAtrasado(){
+    public Equipamento getEquipamento() {
+        return equipamento;
+    }
 
+    public boolean isAtrasado(){
         return dataDevolucao == null && dataPrevistaDevolucao.isBefore(LocalDate.now());
 
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
+    public void setDataDevolucao(LocalDate dataDevolucao) {
+        this.dataDevolucao = dataDevolucao;
+    }
 
+    public void setDataPrevistaDevolucao(LocalDate dataPrevistaDevolucao) {
+        this.dataPrevistaDevolucao = dataPrevistaDevolucao;
+    }
 
+    public void setDataEmprestimo(LocalDate dataEmprestimo) {
+        this.dataEmprestimo = dataEmprestimo;
+    }
 
+    public void setColaborador(Colaborador colaborador) {
+        this.colaborador = colaborador;
+    }
 
+    public void setEquipamento(Equipamento equipamento) {
+        this.equipamento = equipamento;
+    }
 
+    public Long getId() {
+        return id;
+    }
 
+    public LocalDate getDataDevolucao() {
+        return dataDevolucao;
+    }
 
+    public LocalDate getDataPrevistaDevolucao() {
+        return dataPrevistaDevolucao;
+    }
 
+    public LocalDate getDataEmprestimo() {
+        return dataEmprestimo;
+    }
 
-
+    public Colaborador getColaborador() {
+        return colaborador;
+    }
 
     /*
     Long equipamentoId;
