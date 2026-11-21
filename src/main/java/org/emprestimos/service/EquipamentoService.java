@@ -54,6 +54,8 @@ public class EquipamentoService {
         Equipamento equipamento = buscar(id);
         if(emprestimoRepository.existsByEquipamentoId(id)){
             throw new ConflitoException("Equipamento tem empréstimos registrados");
+        }else{
+            repository.deleteById(id);
         }
     }
 

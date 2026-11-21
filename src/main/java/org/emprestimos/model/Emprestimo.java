@@ -11,13 +11,24 @@ public class Emprestimo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Equipamento equipamento;
+    private Long equipamentoId;
+    private Long colaboradorId;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Colaborador colaborador;
+    public Long getColaboradorId() {
+        return colaboradorId;
+    }
+
+    public void setColaboradorId(Long colaboradorId) {
+        this.colaboradorId = colaboradorId;
+    }
+
+    public Long getEquipamentoId() {
+        return equipamentoId;
+    }
+
+    public void setEquipamentoId(Long equipamentoId) {
+        this.equipamentoId = equipamentoId;
+    }
 
     @Column(nullable = false)
     private LocalDate dataEmprestimo;
@@ -27,12 +38,9 @@ public class Emprestimo {
 
     private LocalDate dataDevolucao; //vai ser null até voltar
 
-    public Equipamento getEquipamento() {
-        return equipamento;
-    }
 
-    public boolean isAtrasado(){
-        return dataDevolucao == null && dataPrevistaDevolucao.isBefore(LocalDate.now());
+    public boolean isAtrasado() {
+        return estaAtrasadoEm(LocalDate.now());
 
     }
 
@@ -41,6 +49,7 @@ public class Emprestimo {
     }
 
     public void setDataDevolucao(LocalDate dataDevolucao) {
+
         this.dataDevolucao = dataDevolucao;
     }
 
@@ -49,15 +58,8 @@ public class Emprestimo {
     }
 
     public void setDataEmprestimo(LocalDate dataEmprestimo) {
+
         this.dataEmprestimo = dataEmprestimo;
-    }
-
-    public void setColaborador(Colaborador colaborador) {
-        this.colaborador = colaborador;
-    }
-
-    public void setEquipamento(Equipamento equipamento) {
-        this.equipamento = equipamento;
     }
 
     public Long getId() {
@@ -76,34 +78,28 @@ public class Emprestimo {
         return dataEmprestimo;
     }
 
-    public Colaborador getColaborador() {
-        return colaborador;
-    }
 
-    /*
-    Long equipamentoId;
-    Long colaboradorId;
-    LocalDate dataEmprestimo;
-    LocalDate dataDevolucao;
-    LocalDate dataPrevistaDevolucao;
-
-    public Emprestimo(Long equipamentoId, Long colaboradorId, LocalDate hoje){
+    public Emprestimo(Long equipamentoId, Long colaboradorId, LocalDate hoje) {
         this.equipamentoId = equipamentoId;
         this.colaboradorId = colaboradorId;
-    //como eu coloquei a data no dia "hoje" os testes podem escolher uma data específica, sem depender do dia que o teste foi executado
+        //como eu coloquei a data no dia "hoje" os testes podem escolher uma data específica, sem depender do dia que o teste foi executado
         this.dataEmprestimo = hoje;
 
         this.dataPrevistaDevolucao = hoje.plusDays(14);
     }
 
     //Criei esse metodo para impedir uma devolucao duplicada
-    public void devolver(LocalDate data){
-        if(dataDevolucao != null){
-    throw new IllegalStateException(); //impedimento de uma nova devolução
-        }else{//permito a devolução
+    public void devolver(LocalDate data) {
+        if (dataDevolucao != null) {
+            throw new IllegalStateException(); //impedimento de uma nova devolução
+        } else {//permito a devolução
             dataDevolucao = data;//registro a data da devolucao
         }
     }
+    public Emprestimo() {
+    }
 
-     */
+    public boolean estaAtrasadoEm(LocalDate dataConsulta) {
+        return dataDevolucao == null && dataPrevistaDevolucao.isBefore(dataConsulta);
+    }
 }

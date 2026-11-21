@@ -32,6 +32,7 @@ public class ColaboradorController {
         return service.listar();
     }
     @GetMapping("/{id}")//está definindo o caminho da minha requisição
+
     public Colaborador buscarId(@PathVariable Long id){
         return service.buscar(id);
     }
