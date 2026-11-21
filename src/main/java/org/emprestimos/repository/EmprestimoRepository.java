@@ -9,6 +9,13 @@ import java.util.List;
 public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
 
     boolean existsByEquipamentoId(Long equipamentoId);
+
     List<Emprestimo> findByColaboradorId(Long colaboradorId);
+
     List<Emprestimo>findByDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(LocalDate data);
+
+    boolean existsByColaboradorIdAndDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(Long colaboradorId, LocalDate data);
+
+
+
 }

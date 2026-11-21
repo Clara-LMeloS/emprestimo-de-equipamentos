@@ -1,5 +1,6 @@
 package org.emprestimos.service;
 
+import org.emprestimos.exception.ConflitoException;
 import org.emprestimos.model.Colaborador;
 import org.emprestimos.repository.ColaboradorRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class ColaboradorService {
 
     public Colaborador cadastrar(Colaborador colaborador){
        if(repository.existsByEmail(colaborador.getEmail())){
-           throw new IllegalArgumentException("Esse E-mail já foi cadastrado, tente outro.");
+           throw new ConflitoException("Esse E-mail já foi cadastrado, tente outro.");
        }
         repository.save(colaborador);
         return colaborador;

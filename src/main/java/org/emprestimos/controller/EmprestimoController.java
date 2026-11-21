@@ -18,19 +18,29 @@ public class EmprestimoController {
     public EmprestimoController(EmprestimoService service) {
         this.service = service;
     }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Emprestimo emprestar(@RequestBody @Valid EmprestimoRequest pedido){
-        return service.emprestar(pedido);
+    public Emprestimo emprestar(@RequestParam Long equipamentoId, @RequestParam Long colaboradorId){
+        return service.emprestar(equipamentoId, colaboradorId);
     }
     @PutMapping("/{id}/devolucao")
     public Emprestimo devolver(@PathVariable Long id){
         return service.devolver(id);
     }
+
     @GetMapping
     List<Emprestimo> listar(@RequestParam(required = false) Boolean atrasados){
         return service.listar(atrasados);
     }
+
+
+    @GetMapping("/{id}")
+       public Emprestimo emprestimoBuscar(@PathVariable Long id){
+        return service.buscar(id);
+       }
+
+
 }
 // GET /equipamentos?tipo=NOTEBOOK
 // GET /equipamentos?disponivel=true
