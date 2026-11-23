@@ -142,3 +142,9 @@ h1 {
 .cartao:nth-child(3) {
     border-left-color: var(--amarelo-principal);
 }
+button:hover {
+    background-color: var(--amarelo-principal);
+    color: var(--preto);
+    cursor: pointer;
+    transition: 0.3s;
+}
