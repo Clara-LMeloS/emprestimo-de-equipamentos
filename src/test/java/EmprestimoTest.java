@@ -1,14 +1,14 @@
 import org.emprestimos.exception.ConflitoException;
-import org.emprestimos.model.Colaborador;
 import org.emprestimos.model.Emprestimo;
 import org.emprestimos.model.Equipamento;
+import org.emprestimos.repository.ColaboradorRepository;
 import org.emprestimos.repository.EmprestimoRepository;
 import org.emprestimos.repository.EquipamentoRepository;
-import org.emprestimos.service.ColaboradorService;
 import org.emprestimos.service.EmprestimoService;
-import org.emprestimos.service.EquipamentoService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,124 +17,131 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EmprestimoTest {
 
     @Mock
     EmprestimoRepository repository;
+
     @Mock
-    EquipamentoService serviceE;
+    EquipamentoRepository equipamentoRepository;
+
     @Mock
-    ColaboradorService serviceC;
-    @Mock
-    EmprestimoRepository emprestimoRepository;
-    @Mock
-    EquipamentoRepository repository2;
+    ColaboradorRepository colaboradorRepository;
 
     @InjectMocks
     EmprestimoService emprestimoService;
-    @InjectMocks
-    EquipamentoService service;
-
 
     @Test
-    void emprestimoVencidoENaoDevolvidoEstaAtrasado(){
+    void emprestimoVencidoENaoDevolvidoEstaAtrasado() {
         Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setDataPrevistaDevolucao(LocalDate.of(2026,11,07));
+        emprestimo.setDataPrevistaDevolucao(LocalDate.of(2026, 11, 7));
 
-        LocalDate dataConsulta = LocalDate.of(2026,11,10);
+        LocalDate dataConsulta = LocalDate.of(2026, 11, 10);
+
         assertTrue(emprestimo.estaAtrasadoEm(dataConsulta));
     }
 
     @Test
-    void oEmprestimoAindaEstaDentroDoPrazo(){
+    void oEmprestimoAindaEstaDentroDoPrazo() {
         Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setDataPrevistaDevolucao(LocalDate.of(2026,11,15));
-        LocalDate dataConsulta = LocalDate.of(2026,11,10);
+        emprestimo.setDataPrevistaDevolucao(LocalDate.of(2026, 11, 15));
+
+        LocalDate dataConsulta = LocalDate.of(2026, 11, 10);
 
         assertFalse(emprestimo.estaAtrasadoEm(dataConsulta));
     }
 
     @Test
-    void naoPermiteEmprestarEquipamentoIndisponivel(){
+    void naoPermiteEmprestarEquipamentoIndisponivel() {
         Equipamento equipamento = new Equipamento();
-        Colaborador colaborador = new Colaborador();
-
         equipamento.setDisponivel(false);
 
-        when(serviceE.buscar(1L)).thenReturn(equipamento);// 1L numero tipo Long
-        when(serviceC.buscar(1L)).thenReturn(colaborador);
-        when(repository.existsByColaboradorIdAndDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(1L,LocalDate.now())).thenReturn(false);
+        when(equipamentoRepository.findById(1L))
+                .thenReturn(Optional.of(equipamento));
 
+        when(colaboradorRepository.existsById(1L))
+                .thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class, () ->
+                emprestimoService.emprestar(1L, 1L));
     }
 
     @Test
-    void deveDefinirDataEmprestimoEPrazoDeDevolucao(){
-        LocalDate data = LocalDate.of(2026,11,10);
-        Emprestimo emprestimo = new Emprestimo(1L,1L, data);
+    void deveDefinirDataEmprestimoEPrazoDeDevolucao() {
+        LocalDate data = LocalDate.of(2026, 11, 10);
+
+        Emprestimo emprestimo = new Emprestimo(1L, 1L, data);
+
         assertEquals(data, emprestimo.getDataEmprestimo());
-        assertEquals(data.plusDays(14), emprestimo.getDataPrevistaDevolucao());
+        assertEquals(data.plusDays(14),
+                emprestimo.getDataPrevistaDevolucao());
     }
 
     @Test
     void naoPermiteDevolverEmprestimoMaisDeUmaVez() {
-        Emprestimo emprestimo = new Emprestimo(1L, 1L, LocalDate.now());
+        Emprestimo emprestimo =
+                new Emprestimo(1L, 1L, LocalDate.now());
+
         emprestimo.setDataDevolucao(LocalDate.now());
+
+        when(repository.findById(1L))
+                .thenReturn(Optional.of(emprestimo));
 
         Equipamento equipamento = new Equipamento();
 
-        when(repository.findById(1L)).thenReturn(Optional.of(emprestimo));
-        when(serviceE.buscar(1L)).thenReturn(equipamento);
+        when(equipamentoRepository.findById(1L))
+                .thenReturn(Optional.of(equipamento));
 
-        assertThrows(ConflitoException.class, () -> {
-            emprestimoService.devolver(1L);
-        });
+        assertThrows(ConflitoException.class, () ->
+                emprestimoService.devolver(1L));
+
     }
 
     @Test
     void deveRegistrarDevolucaoELiberarEquipamento() {
-        Emprestimo emprestimo = new Emprestimo(1L, 1L, LocalDate.now());
+        Emprestimo emprestimo =
+                new Emprestimo(1L, 1L, LocalDate.now());
+
         Equipamento equipamento = new Equipamento();
         equipamento.setDisponivel(false);
 
-        when(repository.findById(1L)).thenReturn(Optional.of(emprestimo));
-        when(serviceE.buscar(1L)).thenReturn(equipamento);
-        when(repository.save(emprestimo)).thenReturn(emprestimo);
+        when(repository.findById(1L))
+                .thenReturn(Optional.of(emprestimo));
+
+        when(equipamentoRepository.findById(1L))
+                .thenReturn(Optional.of(equipamento));
+
+        when(repository.save(emprestimo))
+                .thenReturn(emprestimo);
 
         emprestimoService.devolver(1L);
 
         assertEquals(LocalDate.now(), emprestimo.getDataDevolucao());
         assertTrue(equipamento.isDisponivel());
-    }
 
-    @Test
-    void naoPermiteRemoverEquipamentoComHistorico() {
-        Equipamento equipamento = new Equipamento();
-
-        when(repository2.findById(1L)).thenReturn(Optional.of(equipamento));
-        when(emprestimoRepository.existsByEquipamentoId(1L)).thenReturn(true);
-
-        assertThrows(ConflitoException.class, () -> {
-            service.remover(1L);
-        });
+        verify(equipamentoRepository).save(equipamento);
+        verify(repository).save(emprestimo);
     }
 
     @Test
     void naoPermiteNovoEmprestimoParaColaboradorComAtraso() {
         Equipamento equipamento = new Equipamento();
-        Colaborador colaborador = new Colaborador();
 
-        when(serviceE.buscar(1L)).thenReturn(equipamento);
-        when(serviceC.buscar(1L)).thenReturn(colaborador);
+        when(equipamentoRepository.findById(1L))
+                .thenReturn(Optional.of(equipamento));
 
-        when(repository.existsByColaboradorIdAndDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(
-                1L, LocalDate.now())).thenReturn(true);
+        when(colaboradorRepository.existsById(1L))
+                .thenReturn(true);
 
-        assertThrows(ConflitoException.class, () -> {
-            emprestimoService.emprestar(1L, 1L);
-        });
+        when(repository
+                .existsByColaboradorIdAndDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(
+                        1L, LocalDate.now()))
+                .thenReturn(true);
+
+        assertThrows(ConflitoException.class, () ->
+                emprestimoService.emprestar(1L, 1L));
     }
-
-}
+};

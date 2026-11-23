@@ -70,7 +70,7 @@ public class EmprestimoService {
         Equipamento equipamento = equipamentoRepository.findById(emprestimo.getEquipamentoId())
                 .orElseThrow(() -> new NaoEncontradoException("Equipamento não encontrado."));
 
-        if (emprestimo.getDataDevolucao() != null){
+        if (emprestimo.getDataDevolucao() != null) {
             throw new ConflitoException("Emprestimo já devolvido!");
         }
 
@@ -79,6 +79,13 @@ public class EmprestimoService {
         equipamentoRepository.save(equipamento);
 
         return repository.save(emprestimo);
+    }
+
+    public List<Emprestimo> listar(Boolean atrasados) {
+        if (Boolean.TRUE.equals(atrasados)) {
+            return repository.findByDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(LocalDate.now());
+        }
+        return repository.findAll();
     }
 }
 
