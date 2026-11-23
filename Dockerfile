@@ -1,4 +1,16 @@
-FROM ubuntu:latest
-LABEL authors="clara"
+# Etapa 1: compilar
+FROM maven:3-eclipse-temurin-25 AS build
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /app
+COPY . .
+RUN mvn -q -DskipTests package
+
+# Etapa 2: executar
+FROM eclipse-temurin:25-jre
+
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-Xmx350m", "-jar", "app.jar"]
