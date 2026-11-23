@@ -29,7 +29,10 @@ public class TratadorDeErros {
     public ErroResposta validacao(MethodArgumentNotValidException e){
         String mensagem = e.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
         return new ErroResposta(mensagem);
-
-
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErroResposta argumentoInvalido(IllegalArgumentException e) {
+        return new ErroResposta(e.getMessage());
     }
 }

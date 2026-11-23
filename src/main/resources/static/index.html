@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Empréstimos</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
+</head>
+<body>
+    <header class="cabecalho">
+        <div class="marca"><span class="marca-azul">EMPRÉSTIMO</span><span class="marca-verde">+</span></div>
+        <div>
+            <h1>Sistema de Empréstimos</h1>
+            <p>Gestão de equipamentos</p>
+        </div>
+    </header>
+
+    <div class="layout-principal">
+        <aside class="menu-lateral">
+            <h2>Menu</h2>
+            <button class="item-menu ativo" data-tela="inicio">Início</button>
+            <button class="item-menu" data-tela="equipamentos">Equipamentos</button>
+            <button class="item-menu" data-tela="colaboradores">Colaboradores</button>
+            <button class="item-menu" data-tela="emprestimos">Empréstimos</button>
+        </aside>
+
+        <main class="conteudo-principal">
+            <section id="tela-inicio" class="tela ativa">
+                <div class="titulo-pagina">
+                    <div>
+                        <h2>Visão geral</h2>
+                        <p>Acompanhe os dados do sistema.</p>
+                    </div>
+                    <button class="botao botao-secundario" id="atualizar-painel">Atualizar dados</button>
+                </div>
+                <div class="painel-cartoes">
+                    <article class="cartao cartao-azul"><h3>Total de equipamentos</h3><p id="total-equipamentos">—</p></article>
+                    <article class="cartao cartao-verde"><h3>Disponíveis</h3><p id="equipamentos-disponiveis">—</p></article>
+                    <article class="cartao cartao-amarelo"><h3>Empréstimos ativos</h3><p id="emprestimos-ativos">—</p></article>
+                    <article class="cartao cartao-vermelho"><h3>Empréstimos atrasados</h3><p id="emprestimos-atrasados">—</p></article>
+                </div>
+                <p class="aviso" id="aviso-inicio" role="status"></p>
+            </section>
+
+            <section id="tela-equipamentos" class="tela">
+                <div class="titulo-pagina">
+                    <div><h2>Equipamentos</h2><p>Cadastre e consulte os equipamentos.</p></div>
+                    <button class="botao botao-secundario" id="recarregar-equipamentos">Atualizar lista</button>
+                </div>
+                <form id="form-equipamento" class="formulario">
+                    <h3>Novo equipamento</h3>
+                    <div class="campos">
+                        <label>Nome<input name="nome" required maxlength="120" placeholder="Ex.: Notebook Dell"></label>
+                        <label>Patrimônio<input name="patrimonio" required maxlength="60" placeholder="Ex.: NB-0002"></label>
+                        <label>Tipo
+                            <select name="tipo" required>
+                                <option value="">Selecione</option>
+                                <option value="NOTEBOOK">Notebook</option>
+                                <option value="MONITOR">Monitor</option>
+                                <option value="MOUSE">Mouse</option>
+                                <option value="TECLADO">Teclado</option>
+                                <option value="HEADSET">Headset</option>
+                                <option value="OUTRO">Outro</option>
+                            </select>
+                        </label>
+                    </div>
+                    <button class="botao botao-principal" type="submit">Cadastrar equipamento</button>
+                    <p class="mensagem" id="mensagem-equipamento" role="status"></p>
+                </form>
+                <div class="tabela-container">
+                    <h3>Equipamentos cadastrados</h3>
+                    <table>
+                        <thead><tr><th>Nome</th><th>Patrimônio</th><th>Tipo</th><th>Disponibilidade</th></tr></thead>
+                        <tbody id="lista-equipamentos"><tr><td colspan="4">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="tela-colaboradores" class="tela">
+                <div class="titulo-pagina">
+                    <div><h2>Colaboradores</h2><p>Cadastre e consulte os colaboradores.</p></div>
+                    <button class="botao botao-secundario" id="recarregar-colaboradores">Atualizar lista</button>
+                </div>
+                <form id="form-colaborador" class="formulario">
+                    <h3>Novo colaborador</h3>
+                    <div class="campos">
+                        <label>Nome<input name="nome" required maxlength="120" placeholder="Nome completo"></label>
+                        <label>E-mail<input name="email" type="email" required maxlength="160" placeholder="nome@empresa.com"></label>
+                    </div>
+                    <button class="botao botao-principal" type="submit">Cadastrar colaborador</button>
+                    <p class="mensagem" id="mensagem-colaborador" role="status"></p>
+                </form>
+                <div class="tabela-container">
+                    <h3>Colaboradores cadastrados</h3>
+                    <table>
+                        <thead><tr><th>Nome</th><th>E-mail</th><th>ID</th></tr></thead>
+                        <tbody id="lista-colaboradores"><tr><td colspan="3">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="tela-emprestimos" class="tela">
+                <div class="titulo-pagina">
+                    <div><h2>Empréstimos</h2><p>Registre empréstimos e devoluções.</p></div>
+                    <button class="botao botao-secundario" id="recarregar-emprestimos">Atualizar lista</button>
+                </div>
+                <form id="form-emprestimo" class="formulario">
+                    <h3>Novo empréstimo</h3>
+                    <div class="campos">
+                        <label>Equipamento
+                            <select name="equipamentoId" id="select-equipamento" required><option value="">Carregando equipamentos...</option></select>
+                        </label>
+                        <label>Colaborador
+                            <select name="colaboradorId" id="select-colaborador" required><option value="">Carregando colaboradores...</option></select>
+                        </label>
+                    </div>
+                    <button class="botao botao-principal" type="submit">Registrar empréstimo</button>
+                    <p class="mensagem" id="mensagem-emprestimo" role="status"></p>
+                </form>
+                <div class="tabela-container">
+                    <h3>Empréstimos registrados</h3>
+                    <table>
+                        <thead><tr><th>ID</th><th>Equipamento</th><th>Colaborador</th><th>Data do empréstimo</th><th>Previsão de devolução</th><th>Status</th><th>Ação</th></tr></thead>
+                        <tbody id="lista-emprestimos"><tr><td colspan="7">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
